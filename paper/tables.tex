@@ -1,0 +1,93 @@
+% ─────────────────────────────────────────────────────────
+% TinyPrognostics — LaTeX Tables
+% Paste into your main.tex as needed
+% ─────────────────────────────────────────────────────────
+
+% Requires in preamble:
+%   \usepackage{booktabs}
+%   \usepackage{multirow}
+
+% ────────────────────────────────────
+% TABLE I — Main Results
+% ────────────────────────────────────
+\begin{table}[t]
+\centering
+\caption{Test RMSE (cycles) on NASA C-MAPSS. Lower is better.
+TinyPrognostics (47\,KB, 12{,}052 params) matches or outperforms
+all baselines on every subset.}
+\label{tab:main}
+\begin{tabular}{lccccr}
+\toprule
+Model & FD001 & FD002 & FD003 & FD004 & Size \\
+\midrule
+Ridge regression        & 42.27 & 54.73 & 43.37 & 54.76 & — \\
+1D-CNN                  & 27.43 & 41.27 & 26.34 & 59.03 & 30.6\,KB \\
+LSTM-64                 & 16.53 & 27.88 & 16.80 & 29.92 & 210.3\,KB \\
+\midrule
+\textbf{TinyPrognostics} & \textbf{16.51} & \textbf{26.97} & \textbf{13.77} & \textbf{29.35} & \textbf{47.1\,KB} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ────────────────────────────────────
+% TABLE II — Multi-dataset Results
+% ────────────────────────────────────
+\begin{table}[t]
+\centering
+\caption{TinyPrognostics results across three prognostic benchmarks.}
+\label{tab:multidataset}
+\begin{tabular}{llcc}
+\toprule
+Dataset & Task & Metric & Result \\
+\midrule
+NASA Battery & SoH RUL regression     & RMSE (cycles)  & 2.00 \\
+NASA Battery & Health-state classif.  & Accuracy (\%)  & 98.2 \\
+CWRU Bearing & 10-class fault classif.& Accuracy (\%)  & 99.79 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ────────────────────────────────────
+% TABLE III — Ablation
+% ────────────────────────────────────
+\begin{table}[t]
+\centering
+\caption{Ablation study. RMSE on FD001 and FD003.
+$\Delta$ denotes RMSE change relative to the full model (positive = worse).}
+\label{tab:ablation}
+\begin{tabular}{lrrrr}
+\toprule
+Variant & FD001 & $\Delta$FD001 & FD003 & $\Delta$FD003 \\
+\midrule
+Full model                & 15.86 & —        & 14.39 & —      \\
+\quad w/o Cross-sensor gate & 17.79 & $+$1.93  & 14.88 & $+$0.49 \\
+\quad w/o Skip connection   & 14.53 & $-$1.33  & 14.77 & $+$0.38 \\
+\quad w/o Dilation          & 14.63 & $-$1.22  & 14.52 & $+$0.13 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ────────────────────────────────────
+% TABLE IV — Transfer Learning
+% ────────────────────────────────────
+\begin{table}[t]
+\centering
+\caption{Transfer learning: FD001-pretrained TinyPrognostics fine-tuned
+on target domain with frozen TCN+GRU layers at varying data fractions.
+Scratch = training from random initialisation on the target domain.}
+\label{tab:transfer}
+\begin{tabular}{lccccr}
+\toprule
+Target & 10\% & 25\% & 50\% & 100\% & Scratch \\
+\midrule
+FD003 (RMSE)   & 16.31 & 14.84 & 13.82 & 14.17 & 13.77 \\
+Battery (RMSE) & 4.29  & 3.92  & 3.94  & 3.80  & 2.00  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ────────────────────────────────────
+% NASA Prognostic Scores (inline ref)
+% ────────────────────────────────────
+% FD001: 485.99   FD002: 7069.07
+% FD003: 440.40   FD004: 9037.30

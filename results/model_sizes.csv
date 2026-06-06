@@ -1,0 +1,5 @@
+model,params,size_kb
+TinyPrognostics,12052,47.1
+LSTM-64,,210.3
+CNN-32,,30.6
+Ridge,-,-
