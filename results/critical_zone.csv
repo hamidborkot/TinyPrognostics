@@ -1,0 +1,4 @@
+model,fd001_rmse_overall,fd001_rmse_crit,fd002_rmse_overall,fd002_rmse_crit,fd003_rmse_overall,fd003_rmse_crit,fd004_rmse_overall,fd004_rmse_crit,crit_threshold_cycles
+TinyPrognostics,14.7494,4.6302,26.7423,5.5173,13.9485,3.1427,27.6702,6.6224,30
+LSTM-64,16.2756,5.2707,27.9466,4.4167,16.0186,2.6583,27.1470,5.9448,30
+CNN-32,26.4671,29.0510,40.8416,20.6667,24.7879,21.5038,39.6203,28.1839,30

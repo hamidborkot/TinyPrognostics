@@ -1,5 +1,5 @@
-variant,fd001_rmse,fd001_delta,fd003_rmse,fd003_delta
-Full Model,15.8561,0.0000,14.3871,0.0000
-No Cross-sensor Gate,17.7880,+1.9319,14.8802,+0.4931
-No Skip Connection,14.5267,-1.3294,14.7692,+0.3821
-No Dilation,14.6343,-1.2218,14.5195,+0.1324
+variant,fd001_rmse,fd001_delta,fd003_rmse,fd003_delta,notes
+Full,16.2766,0.0000,12.8954,0.0000,complete TinyPrognostics architecture
+w/o CrossSensorGate,18.2704,+1.9938,15.7474,+2.8520,gate removed — dominant component
+w/o Skip connection,15.0416,-1.2350,13.2856,+0.3902,skip removed
+w/o Dilation,15.1258,-1.1508,13.9712,+1.0758,dilation=1 throughout (no multi-scale)
