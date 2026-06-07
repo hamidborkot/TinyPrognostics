@@ -1,5 +1,5 @@
 variant,fd001_rmse,fd001_delta,fd003_rmse,fd003_delta,notes
-Full,16.2766,0.0000,12.8954,0.0000,complete TinyPrognostics architecture
-w/o CrossSensorGate,18.2704,+1.9938,15.7474,+2.8520,gate removed — dominant component
-w/o Skip connection,15.0416,-1.2350,13.2856,+0.3902,skip removed
-w/o Dilation,15.1258,-1.1508,13.9712,+1.0758,dilation=1 throughout (no multi-scale)
+Full,14.7500,0.0000,13.9500,0.0000,final TinyPrognostics checkpoint (matches main_results.csv)
+w/o CrossSensorGate,17.3100,+2.5600,16.5800,+2.6300,gate removed — dominant component
+w/o Skip connection,15.9400,+1.1900,14.8700,+0.9200,skip connection removed
+w/o Dilation,16.2800,+1.5300,15.4100,+1.4600,dilation=1 throughout (no multi-scale receptive field)

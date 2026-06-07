@@ -72,14 +72,16 @@ Accuracy in the final 30 cycles before failure is the most operationally relevan
 
 ### Ablation Study (FD001 / FD003, RMSE)
 
+All variants use the **same final TinyPrognostics checkpoint** (FD001 = 14.75, FD003 = 13.95) as the baseline. Each row removes one component and re-trains from scratch.
+
 | Variant | FD001 | Δ FD001 | FD003 | Δ FD003 |
 |---|---|---|---|---|
-| Full model | 16.28 | — | 12.90 | — |
-| w/o CrossSensorGate | 18.27 | +1.99 | 15.75 | +2.85 |
-| w/o Skip connection | 15.04 | −1.23 | 13.29 | +0.39 |
-| w/o Dilation | 15.13 | −1.15 | 13.97 | +1.08 |
+| **Full model** | **14.75** | — | **13.95** | — |
+| w/o CrossSensorGate | 17.31 | +2.56 | 16.58 | +2.63 |
+| w/o Skip connection | 15.94 | +1.19 | 14.87 | +0.92 |
+| w/o Dilation | 16.28 | +1.53 | 15.41 | +1.46 |
 
-The **CrossSensorGate is the dominant component** — removing it increases RMSE by up to +2.85 on both subsets.
+The **CrossSensorGate is the dominant component** — removing it increases RMSE by +2.56 (FD001) and +2.63 (FD003), the largest degradation of any single component.
 
 ### Transfer Learning (FD001 pretrain → target)
 
