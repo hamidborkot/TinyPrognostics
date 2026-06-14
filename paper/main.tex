@@ -1,0 +1,667 @@
+%% TinyPrognostics — Paper Skeleton
+%% Journal: Artificial Intelligence for Engineering (Wiley/IET)
+%% Template: WileyNJDv5 | AMA style | Times font | 1-column
+%% Compile with: XeLaTeX (preferred) or pdfLaTeX
+%%
+%% ============================================================
+%% IMPORTANT: Download WileyNJDv5.cls and place it in the same
+%% folder as this file. Get it from:
+%% https://authorservices.wiley.com/author-resources/Journal-Authors/Prepare/latex.html
+%% ============================================================
+
+\documentclass[AMA,Times1COL]{WileyNJDv5}
+
+%% ---------- Extra packages ----------
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+%% ---------- Journal metadata ----------
+\articletype{ORIGINAL RESEARCH}
+
+\received{00 Month 2026}
+\revised{00 Month 2026}
+\accepted{00 Month 2026}
+
+\raggedbottom
+
+%% ============================================================
+\begin{document}
+%% ============================================================
+
+\title{NanoSentry: An Edge-Deployable Unified Neural Architecture
+for Multi-Domain Industrial Prognostics and Health Management}
+
+%% --- Authors ---
+\author[1]{MD Hamid Borkot Tulla}
+
+%% --- Affiliations ---
+\authormark{TULLA}
+
+\address[1]{\orgdiv{Department Name},
+\orgname{Institution Name},
+\orgaddress{\state{State}, \country{Country}}}
+
+%% --- Correspondence ---
+\corres{MD Hamid Borkot Tulla, \email{your@email.com}}
+
+%% --- Abstract ---
+\abstract{
+Prognostics and health management (PHM) systems deployed on edge hardware face
+a fundamental conflict: state-of-the-art deep learning models for remaining
+useful life (RUL) estimation and fault classification demand computational
+resources that microcontroller-class devices cannot provide. We introduce
+NanoSentry, a 12{,}052-parameter (47.1\,KB) unified neural architecture that
+resolves this conflict by jointly performing RUL regression and health-state
+classification across heterogeneous industrial domains within a single model.
+NanoSentry combines dilated causal 1D convolutions with a novel CrossSensorGate
+mechanism for adaptive inter-sensor feature weighting and a GRU with orthogonal
+initialisation for temporal context. Evaluated on three public benchmarks ---
+NASA C-MAPSS turbofan engine degradation (four subsets), NASA lithium-ion
+battery state-of-health, and CWRU rolling bearing fault classification ---
+NanoSentry achieves RMSE of 14.75 on C-MAPSS FD001, surpassing an LSTM
+baseline 4.5$\times$ its size, and 99.96\% fault classification accuracy.
+Critically, in the operationally decisive window of RUL $\leq$ 30 cycles,
+NanoSentry reduces prediction error by 3--7$\times$ compared with a
+comparable-size CNN baseline whose critical-zone RMSE pathologically
+exceeds its overall error --- a hazardous property for safety-critical
+maintenance. To our knowledge, NanoSentry is the first sub-50\,KB architecture
+validated simultaneously across turbofan, battery, and bearing prognostic tasks.
+}
+
+%% --- Keywords ---
+\keywords{prognostics and health management, remaining useful life estimation,
+edge deployment, dilated temporal convolution, CrossSensorGate, multi-task
+learning, bearing fault diagnosis, battery state-of-health}
+
+\maketitle
+
+%% ============================================================
+\section{Introduction}\label{sec:intro}
+%% ============================================================
+
+\subsection{Industrial Motivation}\label{sec:intro:motivation}
+% TODO: Write 3--4 sentences on cost of unplanned failure, IIoT constraints,
+% and the push toward on-device PHM inference.
+% Cite: Lei et al.~\cite{Lei2018}, Zhang et al.~\cite{Zhang2019}
+
+\subsection{The Model-Size Problem}\label{sec:intro:size}
+% TODO: Explain why LSTM/Transformer models cannot run on MCU-class hardware.
+% Cite: Zheng et al.~\cite{Zheng2017}, Mo et al.~\cite{Mo2021}
+
+\subsection{The Multi-Domain Gap}\label{sec:intro:gap}
+% TODO: No single sub-50\,KB model shown on turbofan + battery + bearing.
+% Reference the Wu lightweight CNN paper as partial prior work.
+
+\subsection{Contributions}\label{sec:intro:contributions}
+The main contributions of this work are as follows:
+\begin{enumerate}
+ \item We propose NanoSentry, a 12{,}052-parameter unified PHM architecture
+ that jointly performs RUL regression and health-state classification across
+ three industrial domains within a single 47.1\,KB model.
+ \item We introduce the CrossSensorGate mechanism, a lightweight attention
+ module that adaptively weights inter-sensor features without increasing
+ model depth or parameter count.
+ \item We demonstrate, for the first time, that a sub-50\,KB architecture
+ achieves competitive accuracy against models 4.5$\times$ its size on the
+ NASA C-MAPSS benchmark.
+ \item We establish a critical-zone RMSE evaluation protocol (RUL $\leq$ 30
+ cycles) and show that NanoSentry reduces end-of-life prediction error by
+ 3--7$\times$ compared with a comparable-size CNN baseline.
+\end{enumerate}
+
+%% ============================================================
+\section{Related Work}\label{sec:related}
+%% ============================================================
+
+\subsection{RUL Estimation for Turbofan Engines}\label{sec:related:rul}
+% TODO: Summarise CNN, LSTM, TCN, Transformer approaches on C-MAPSS.
+% Cite: Zheng2017, Elsheikh2019, Li2020, Zhang2023atcn, Mo2021,
+% Chen2024, Zhang2023imdssn, Lin2023, Liu2021, Gong2022
+
+\subsection{Battery State-of-Health Estimation}\label{sec:related:battery}
+% TODO: Data-driven SOH methods.
+% Cite: Wang2024, Gong2024, Richardson2017
+
+\subsection{Bearing Fault Diagnosis}\label{sec:related:bearing}
+% TODO: CNN and deep learning fault classification.
+% Cite: Cheng2020, Han2021, Zhao2020, Wen2018, Zhang2018, Liao2023,
+% Liang2022
+
+\subsection{Multi-Task and Unified PHM}\label{sec:related:multitask}
+% TODO: Joint RUL + fault models.
+% Cite: Zhou2025, Gong2022
+
+\subsection{Lightweight Neural Architectures for PHM}\label{sec:related:efficient}
+% TODO: Existing compact models, their limitations.
+% End with the gap statement:
+% ``No published work has demonstrated a unified architecture below 50\,KB
+% validated simultaneously on turbofan, battery, and bearing PHM tasks.''
+
+%% ============================================================
+\section{NanoSentry Architecture}\label{sec:arch}
+%% ============================================================
+
+\subsection{Problem Formulation}\label{sec:arch:problem}
+% Given a multivariate time-series window X of length T and C sensors,
+% predict RUL scalar and health-state class simultaneously.
+% TODO: Write formal problem statement.
+
+\subsection{Architecture Overview}\label{sec:arch:overview}
+% TODO: Reference Figure~\ref{fig:arch} and describe the four-stage pipeline:
+% Linear embed -> TCN stack -> CrossSensorGate + Skip -> GRU -> dual heads.
+
+% ----- FIGURE 1: Architecture diagram -----
+\begin{figure}[!t]
+ \centering
+ % \includegraphics[width=\columnwidth]{figs/architecture.pdf}
+ \fbox{\parbox{0.9\columnwidth}{\centering\vspace{2cm}
+ [PLACEHOLDER: NanoSentry architecture diagram]\vspace{2cm}}}
+ \caption{NanoSentry architecture. Input windows pass through a linear
+ embedding, three dilated causal convolution blocks (dilation 1, 2, 4),
+ a CrossSensorGate with residual skip, and a GRU before branching into
+ the RUL regression head and health-state classification head.}
+ \label{fig:arch}
+\end{figure}
+
+\subsection{Dilated Causal Convolution Block}\label{sec:arch:dilconv}
+% TODO: Describe the TCN block.
+Let $\mathbf{X} \in \mathbb{R}^{T \times C}$ denote an input window of
+$T$ timesteps and $C$ sensor channels. A dilated causal convolution with
+dilation factor $d$ and kernel size $k$ computes
+\begin{equation}\label{eq:dilconv}
+ \mathbf{h}_t = \text{ReLU}\!\left(
+ \sum_{j=0}^{k-1} \mathbf{W}_j \, \mathbf{x}_{t - d \cdot j}
+ + \mathbf{b} \right),
+\end{equation}
+where $\mathbf{W}_j$ are learnable filter weights and causality is enforced
+by restricting attention to $t - d\cdot j \leq t$. Three successive blocks
+with $d \in \{1,2,4\}$ yield a receptive field of $7(k-1)+1$ timesteps
+without pooling.
+
+\subsection{CrossSensorGate}\label{sec:arch:gate}
+% TODO: Describe and motivate the gate.
+Let $\mathbf{H} \in \mathbb{R}^{T \times d_{\text{model}}}$ be the TCN
+output. The CrossSensorGate computes a channel-wise attention mask
+\begin{equation}\label{eq:gate}
+ \mathbf{g} = \sigma\!\left( \mathbf{W}_g \mathbf{H}^\top + \mathbf{b}_g \right),
+ \qquad
+ \hat{\mathbf{H}} = \mathbf{g}^\top \odot \mathbf{H},
+\end{equation}
+where $\sigma$ is the sigmoid function, $\odot$ denotes element-wise
+multiplication, and $\mathbf{W}_g \in \mathbb{R}^{d_{\text{model}}
+\times d_{\text{model}}}$. The gate suppresses sensor channels
+irrelevant to the current degradation regime without adding layers.
+
+\subsection{Residual Skip Connection}\label{sec:arch:skip}
+A linear projection $\mathbf{W}_{\text{skip}} \in
+\mathbb{R}^{C \times d_{\text{model}}}$ maps the raw input directly to
+the model dimension, and the gated feature map is augmented by
+\begin{equation}\label{eq:skip}
+ \tilde{\mathbf{H}} = \hat{\mathbf{H}} + \mathbf{X}\mathbf{W}_{\text{skip}}.
+\end{equation}
+This preserves raw sensor gradients during backpropagation and
+prevents vanishing-gradient degradation in shallow stacks.
+
+\subsection{Gated Recurrent Unit}\label{sec:arch:gru}
+The skip-augmented representation is passed to a single-layer GRU
+\begin{equation}\label{eq:gru}
+ \mathbf{z}_t = \text{GRU}\!\left(\tilde{\mathbf{h}}_t,\, \mathbf{z}_{t-1}\right),
+\end{equation}
+with hidden dimension $d = 24$ and weights initialised with an
+orthogonal matrix~\cite{TODO} to prevent gradient explosion at the
+start of training.
+
+\subsection{Dual Output Heads}\label{sec:arch:heads}
+The final hidden state $\mathbf{z}_T$ is fed to two independent
+fully-connected heads:
+\begin{equation}\label{eq:heads}
+ \hat{y}_{\text{RUL}} = \mathbf{w}_r^\top \mathbf{z}_T + b_r,
+ \qquad
+ \hat{\mathbf{y}}_{\text{state}} = \text{softmax}\!\left(
+ \mathbf{W}_c \mathbf{z}_T + \mathbf{b}_c \right).
+\end{equation}
+
+\subsection{Joint Loss Function}\label{sec:arch:loss}
+The model is trained end-to-end by minimising
+\begin{equation}\label{eq:loss}
+ \mathcal{L} = \lambda_1 \, \mathcal{L}_{\text{RUL}}
+ + \lambda_2 \, \mathcal{L}_{\text{state}},
+\end{equation}
+where $\mathcal{L}_{\text{RUL}}$ is mean squared error,
+$\mathcal{L}_{\text{state}}$ is cross-entropy, and
+$\lambda_1, \lambda_2$ are task weights set to 1.0 and 0.5 respectively.
+The asymmetric NASA scoring function
+\begin{equation}\label{eq:nasa}
+ s_i =
+\begin{cases}
+ e^{-d_i / 13} - 1 & d_i < 0 \quad \text{(early prediction)}\\
+ e^{\phantom{-}d_i / 10} - 1 & d_i \geq 0 \quad \text{(late prediction)}
+\end{cases}
+\end{equation}
+is reported as a secondary metric to penalise late predictions more
+severely, where $d_i = \hat{y}_i - y_i$.
+
+\subsection{Training Procedure}\label{sec:arch:training}
+\begin{algorithm}[!h]
+\caption{NanoSentry training procedure}\label{alg:training}
+\begin{algorithmic}[1]
+\Require Dataset $\mathcal{D}$, epochs $E$, batch size $B$,
+ learning rate $\eta$, task weights $\lambda_1, \lambda_2$
+\Ensure Trained model parameters $\boldsymbol{\theta}$
+\State Initialise $\boldsymbol{\theta}$ (GRU weights: orthogonal)
+\State Standardise inputs per sensor channel
+\For{epoch $e = 1, \ldots, E$}
+ \For{each mini-batch $(\mathbf{X}, y_{\text{RUL}}, y_{\text{state}}) \in \mathcal{D}$}
+ \State Forward pass: compute $\hat{y}_{\text{RUL}}$,
+ $\hat{\mathbf{y}}_{\text{state}}$ via Eqs.\ (\ref{eq:dilconv})---(\ref{eq:heads})
+ \State Compute $\mathcal{L}$ via Eq.\ (\ref{eq:loss})
+ \State Backpropagate; update $\boldsymbol{\theta}$ with Adam
+ \EndFor
+ \State Decay $\eta$ with cosine schedule
+\EndFor
+\State \Return $\boldsymbol{\theta}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Parameter Budget}\label{sec:arch:params}
+% TODO: Table or inline breakdown of 12,052 parameters by component.
+
+%% ============================================================
+\section{Experimental Setup}\label{sec:exp}
+%% ============================================================
+
+\subsection{Datasets}\label{sec:exp:data}
+% TODO: Describe C-MAPSS, NASA Battery, CWRU.
+% Cite: Saxena2008, Cheng2020
+
+\begin{table}[!h]
+\caption{Dataset summary.}\label{tab:datasets}
+\begin{tabular}{lllll}
+\toprule
+Dataset & Subsets & Sensors & Task & Metric \\
+\midrule
+NASA C-MAPSS~\cite{Saxena2008} & FD001--FD004 & 14 & RUL regression & RMSE, NASAScore \\
+NASA Battery & --- & 4 & SOH / RUL & RMSE, MAE \\
+CWRU Bearing & 10 classes & 1 & Fault classification & Accuracy \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Preprocessing}\label{sec:exp:preprocessing}
+% TODO: K-Means normalisation for FD002/FD004, z-score for FD001/FD003,
+% RUL cap at 125 cycles, window length 64.
+
+\subsection{Baselines}\label{sec:exp:baselines}
+% TODO: Describe Ridge Regression, CNN-32 (30.6 KB), LSTM-64 (210.3 KB).
+
+\subsection{Evaluation Metrics}\label{sec:exp:metrics}
+% TODO: RMSE, MAE, NASAScore (Eq.~\ref{eq:nasa}), Accuracy,
+% Critical-zone RMSE (RUL <= 30).
+
+\subsection{Implementation Details}\label{sec:exp:impl}
+% TODO: PyTorch 2.x, Python 3.12, hardware, seeds, epochs.
+
+%% ============================================================
+\section{Results and Analysis}\label{sec:results}
+%% ============================================================
+
+\subsection{C-MAPSS RUL Estimation}\label{sec:results:cmapss}
+% TODO: Discuss Table~\ref{tab:cmapss}.
+
+\begin{table}[!h]
+\caption{C-MAPSS RUL estimation (RMSE $\downarrow$, lower is better).%
+\tablenotetext{a}{Model size in FP32 bytes.}}
+\label{tab:cmapss}
+\begin{tabular}{llllll}
+\toprule
+Model & Size\textsuperscript{a} & FD001 & FD002 & FD003 & FD004 \\
+\midrule
+Ridge Regression & --- & 44.14 & 54.44 & 42.43 & 55.07 \\
+CNN-32 & 30.6\,KB & 26.47 & 40.84 & 24.79 & 39.62 \\
+LSTM-64 & 210.3\,KB & 16.28 & 27.95 & 16.02 & \textbf{27.15} \\
+\textbf{NanoSentry} & \textbf{47.1\,KB} & \textbf{14.75} & \textbf{26.74} & \textbf{13.95} & 27.67 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Critical-Zone Analysis}\label{sec:results:critical}
+% TODO: Explain the critical-zone metric and discuss Table~\ref{tab:critical}.
+% Highlight CNN-32 pathological failure.
+
+\begin{table}[!h]
+\caption{Critical-zone RMSE at RUL $\leq$ 30 cycles ($\downarrow$).%
+\tablenotetext{a}{CNN-32 critical-zone RMSE exceeds its overall RMSE on FD001
+(29.05 vs.\ 26.47), indicating systematic over-estimation near end-of-life.}}
+\label{tab:critical}
+\begin{tabular}{lllll}
+\toprule
+Model & FD001 & FD002 & FD003 & FD004 \\
+\midrule
+\textbf{NanoSentry} & \textbf{4.63} & 5.52 & 3.14 & 6.62 \\
+LSTM-64 & 5.27 & \textbf{4.42} & \textbf{2.66} & \textbf{5.94} \\
+CNN-32 & 29.05\textsuperscript{a} & 20.67 & 21.50 & 28.18 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Multi-Domain Results}\label{sec:results:multi}
+% TODO: Discuss Table~\ref{tab:multidomain}.
+
+\begin{table}[!h]
+\caption{Multi-domain results.}\label{tab:multidomain}
+\begin{tabular}{lllll}
+\toprule
+Dataset & Task & Metric & NanoSentry \\
+\midrule
+NASA Battery & RUL regression & RMSE & \textbf{1.87} \\
+NASA Battery & RUL regression & MAE & \textbf{0.42} \\
+CWRU Bearing & Fault classification & Accuracy (\%) & \textbf{99.96} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{NASA Score}\label{sec:results:nasa}
+% TODO: Discuss NASAScore table.
+
+\begin{table}[!h]
+\caption{NASA asymmetric score ($\downarrow$, lower is better).}\label{tab:nasa}
+\begin{tabular}{ll}
+\toprule
+Subset & NASAScore \\
+\midrule
+FD001 & 350.47 \\
+FD002 & 7405.94 \\
+FD003 & 315.86 \\
+FD004 & 8677.78 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablation Study}\label{sec:results:ablation}
+% TODO: Discuss Table~\ref{tab:ablation}.
+% Emphasise CrossSensorGate as dominant component.
+
+\begin{table}[!h]
+\caption{Ablation study (RMSE $\downarrow$). Baseline is the full NanoSentry
+model trained from the same checkpoint used in Table~\ref{tab:cmapss}.}
+\label{tab:ablation}
+\begin{tabular}{lllll}
+\toprule
+Variant & FD001 & $\Delta$ FD001 & FD003 & $\Delta$ FD003 \\
+\midrule
+\textbf{Full model} & \textbf{14.75} & --- & \textbf{13.95} & --- \\
+w/o CrossSensorGate & 17.31 & $+$2.56 & 16.58 & $+$2.63 \\
+w/o Skip connection & 15.94 & $+$1.19 & 14.87 & $+$0.92 \\
+w/o Dilation & 16.28 & $+$1.53 & 15.41 & $+$1.46 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Transfer Learning}\label{sec:results:transfer}
+% TODO: Discuss Table~\ref{tab:transfer}.
+% Frame the negative result as a finding on domain-specificity.
+
+\begin{table}[!h]
+\caption{Transfer learning: FD001 pretrain $\rightarrow$ target domain.}
+\label{tab:transfer}
+\begin{tabular}{llllll}
+\toprule
+Target & 10\% data & 25\% & 50\% & 100\% & Scratch \\
+\midrule
+FD003 (RMSE) & 15.08 & 15.35 & 14.64 & 15.31 & \textbf{13.95} \\
+Battery (RMSE) & 3.84 & 3.83 & 2.48 & 3.75 & \textbf{1.87} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%% --- FIGURE 2: RUL prediction curves ---
+\begin{figure}[!t]
+ \centering
+ % \includegraphics[width=\columnwidth]{figs/rul_curves.pdf}
+ \fbox{\parbox{0.9\columnwidth}{\centering\vspace{2cm}
+ [PLACEHOLDER: RUL prediction curves --- NanoSentry vs LSTM-64
+ on one FD001 test engine. Predicted vs.\ true RUL over cycles.]\vspace{2cm}}}
+ \caption{Predicted versus true RUL for a representative FD001 test engine.
+ NanoSentry tracks the degradation trajectory with lower end-of-life
+ deviation than LSTM-64 despite being 4.5$\times$ smaller.}
+ \label{fig:rul_curves}
+\end{figure}
+
+%% --- FIGURE 3: Critical-zone scatter ---
+\begin{figure}[!t]
+ \centering
+ % \includegraphics[width=\columnwidth]{figs/critical_zone.pdf}
+ \fbox{\parbox{0.9\columnwidth}{\centering\vspace{2cm}
+ [PLACEHOLDER: Critical-zone scatter plot. All three models,
+ actual vs.\ predicted RUL for RUL $\leq$ 30 cycles, FD001.]\vspace{2cm}}}
+ \caption{Critical-zone scatter (RUL $\leq$ 30 cycles, FD001). Each point
+ is one test-set sample. CNN-32 (red) exhibits severe over-estimation bias;
+ NanoSentry (blue) clusters tightly around the identity line.}
+ \label{fig:critical}
+\end{figure}
+
+%% ============================================================
+\section{Discussion}\label{sec:discussion}
+%% ============================================================
+
+\subsection{Accuracy--Size Trade-Off}\label{sec:disc:tradeoff}
+% TODO: Discuss 4.5x size advantage with competitive RMSE.
+% Contextualise against MCU deployment constraints.
+
+\subsection{Critical-Zone Behaviour}\label{sec:disc:critical}
+% TODO: Explain why CNN-32 pathologically fails in the critical zone.
+% Discuss safety implications for maintenance scheduling.
+
+\subsection{Transfer Learning and Domain Specificity}\label{sec:disc:transfer}
+% TODO: Argue that the negative transfer result is itself a contribution.
+% Propose federated PHM as a future direction.
+% Cite: Almeida2026 (FL-Offshore paper)
+
+%% ============================================================
+\section{Conclusions}\label{sec:conclusions}
+%% ============================================================
+
+% TODO: Three short paragraphs:
+% 1. What was proposed and demonstrated.
+% 2. Three key findings (one sentence each).
+% 3. Future work: uncertainty quantification, federated learning,
+% real-time embedded validation.
+
+%% ============================================================
+%% BIBLIOGRAPHY
+%% ============================================================
+
+%% Option A (recommended): BibTeX
+%\bibliographystyle{wileyNJD-AMA}
+%\bibliography{references}
+
+%% Option B: Inline (paste your .bbl output here if needed)
+\begin{thebibliography}{99}
+
+\bibitem{Lei2018}
+Lei Y, Li N, Guo L, Li N, Yan T, Lin J.
+Machinery health prognostics: a systematic review from data acquisition
+to RUL prediction.
+\textit{Mech Syst Signal Process.} 2018;104:799--834.
+
+\bibitem{Saxena2008}
+Saxena A, Goebel K, Simon D, Eklund N.
+Damage propagation modeling for aircraft engine run-to-failure simulation.
+In: \textit{2008 International Conference on Prognostics and Health
+Management}; 2008:1--9.
+
+\bibitem{Zhang2019}
+Zhang W, Yang D, Wang H.
+Data-driven methods for predictive maintenance of industrial equipment:
+a survey.
+\textit{IEEE Syst J.} 2019;13(3):2213--2227.
+
+\bibitem{Zheng2017}
+Zheng S, Ristovski K, Farahat A, Gupta C.
+Long short-term memory network for remaining useful life estimation.
+In: \textit{2017 IEEE International Conference on Prognostics and Health
+Management (ICPHM)}; 2017:88--95.
+
+\bibitem{Mo2021}
+Mo Y, Wu Q, Li X, Huang B.
+Remaining useful life estimation via transformer encoder enhanced by
+a gated convolutional unit.
+\textit{J Intell Manuf.} 2021;32(7):1997--2006.
+
+\bibitem{Elsheikh2019}
+Elsheikh A, Yacout S, Ouali M-S.
+Bidirectional handshaking LSTM for remaining useful life prediction.
+\textit{Neurocomputing.} 2019;323:148--156.
+
+\bibitem{Li2020}
+Li H, Zhao W, Zhang Y, Zio E.
+Remaining useful life prediction using multi-scale deep convolutional
+neural network.
+\textit{Appl Soft Comput.} 2020;89:106113.
+
+\bibitem{Zhang2023atcn}
+Zhang Q, Liu Q, Ye Q.
+An attention-based temporal convolutional network method for predicting
+remaining useful life of aero-engine.
+\textit{Eng Appl Artif Intell.} 2024;127:107241.
+
+\bibitem{Zhang2023imdssn}
+Zhang J, Li X, Tian J, Luo H, Yin S.
+An integrated multi-head dual sparse self-attention network for
+remaining useful life prediction.
+\textit{Reliab Eng Syst Saf.} 2023;233:109096.
+
+\bibitem{Lin2023}
+Lin R, Wang H, Xiong M, Hou Z, Che C.
+Attention-based gate recurrent unit for remaining useful life prediction
+in prognostics.
+\textit{Appl Soft Comput.} 2023;143:110419.
+
+\bibitem{Liu2021}
+Liu H, Liu Z, Jia W, Lin X.
+Remaining useful life prediction using a novel feature-attention-based
+end-to-end approach.
+\textit{IEEE Trans Ind Inform.} 2021;17(2):1197--1207.
+
+\bibitem{Chen2024}
+Chen X.
+A novel transformer-based DL model enhanced by position-sensitive
+attention and gated hierarchical LSTM for aero-engine RUL prediction.
+\textit{Sci Rep.} 2024;14:10061.
+
+\bibitem{Gong2022}
+Gong R, Li J, Wang C.
+Remaining useful life prediction based on multisensor fusion and
+attention TCN-BiGRU model.
+\textit{IEEE Sens J.} 2022;22(21):21101--21110.
+
+\bibitem{Wang2024}
+Wang F, Zhai Z, Zhao Z, Di Y, Chen X.
+Physics-informed neural network for lithium-ion battery degradation
+stable modeling and prognosis.
+\textit{Nat Commun.} 2024;15:4332.
+
+\bibitem{Gong2024}
+Gong L, Zhang Z, Li X, et al.
+State of health estimation of lithium-ion batteries based on machine
+learning with mechanical-electrical features.
+\textit{Batteries Supercaps.} 2024;7(10):e202400201.
+
+\bibitem{Richardson2017}
+Richardson RR, Osborne MA, Howey DA.
+Gaussian process regression for forecasting battery state of health.
+\textit{J Power Sources.} 2017;357:209--219.
+
+\bibitem{Cheng2020}
+Cheng C, Ma G, Zhang Y, et al.
+A deep learning-based remaining useful life prediction approach
+for bearings.
+\textit{IEEE/ASME Trans Mechatron.} 2020;25(3):1243--1254.
+
+\bibitem{Han2021}
+Han T, Li Y-F, Qian M.
+A hybrid generalization network for intelligent fault diagnosis of
+rotating machinery under unseen working conditions.
+\textit{IEEE Trans Instrum Meas.} 2021;70:1--11.
+
+\bibitem{Zhao2020}
+Zhao M, Zhong S, Fu X, Tang B, Pecht M.
+Deep residual shrinkage networks for fault diagnosis.
+\textit{IEEE Trans Ind Inform.} 2020;16(7):4681--4690.
+
+\bibitem{Wen2018}
+Wen L, Li X, Gao L, Zhang Y.
+A new convolutional neural network-based data-driven fault diagnosis method.
+\textit{IEEE Trans Ind Electron.} 2018;65(7):5990--5998.
+
+\bibitem{Zhang2018}
+Zhang W, Li C, Peng G, Chen Y, Zhang Z.
+A deep convolutional neural network with new training methods for bearing
+fault diagnosis under noisy environment and different working load.
+\textit{Mech Syst Signal Process.} 2018;100:439--453.
+
+\bibitem{Liao2023}
+Liao J-X, Dong H-C, Sun Z-Q, et al.
+Attention-embedded quadratic network (Qttention) for effective and
+interpretable bearing fault diagnosis.
+\textit{IEEE Trans Instrum Meas.} 2023;72:1--13.
+
+\bibitem{Liang2022}
+Liang H, Cao J, Zhao X.
+Multi-scale dynamic adaptive residual network for fault diagnosis.
+\textit{Measurement.} 2022;188:110397.
+
+\bibitem{Zhou2025}
+Zhou L, Wang H.
+Multi-task model of adaptive multi-scale feature fusion and adaptive
+mixture-of-experts for equipment remaining useful life prediction and
+fault diagnosis.
+\textit{Expert Syst Appl.} 2025;272:126807.
+
+\bibitem{Cheng2021}
+Cheng H, Kong X, Chen G, Wang Q, Wang R.
+Transferable convolutional neural network based remaining useful life
+prediction of bearing under multiple failure behaviors.
+\textit{Measurement.} 2021;168:108286.
+
+\bibitem{Li2021}
+Li X, Zhang W.
+Deep learning-based partial domain adaptation method on intelligent
+machinery fault diagnostics.
+\textit{IEEE Trans Ind Electron.} 2021;68(5):4351--4361.
+
+\bibitem{Ding2023}
+Ding W, Li J, Mao W, Meng Z, Shen Z.
+Rolling bearing remaining useful life prediction based on dilated
+causal convolutional DenseNet and an exponential model.
+\textit{Reliab Eng Syst Saf.} 2023;232:109072.
+
+\bibitem{Guo2017}
+Guo L, Li N, Jia F, Lei Y, Lin J.
+A recurrent neural network based health indicator for remaining useful
+life prediction of bearings.
+\textit{Neurocomputing.} 2017;240:98--109.
+
+\bibitem{Ochella2024}
+Ochella S, Dinmohammadi F, Shafiee M.
+Bayesian neural networks for uncertainty quantification in remaining
+useful life prediction.
+\textit{Adv Mech Eng.} 2024;16(7):16878132241239802.
+
+\bibitem{Jiang2026}
+Jiang Z, Wei Y, Li X.
+Remaining useful life prediction across different operational conditions
+based on domain adaptation feature transfer.
+\textit{Sci Rep.} 2026. doi:10.1038/s41598-026-49358-6.
+
+\end{thebibliography}
+
+\end{document}
