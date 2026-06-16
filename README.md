@@ -25,13 +25,11 @@ The architecture combines:
 - A novel **CrossSensorGate** for adaptive inter-sensor weighting
 - A residual skip connection from raw input
 - A single-layer GRU with orthogonal initialisation
-
-- 
+---
 The datasets used in this study are publicly available.
 The NASA C-MAPSS turbofan degradation dataset is available at \url{https://data.nasa.gov/}.
 The CWRU rolling-element bearing fault dataset is available at \url{https://engineering.case.edu/bearingdatacenter}.
 The NASA lithium-ion battery dataset is available at \url{https://data.nasa.gov/}.
----
 
 ## Key Results
 
