@@ -1,5 +1,7 @@
-model,params,size_kb
-TinyPrognostics,12052,47.1
-LSTM-64,,210.3
-CNN-32,,30.6
-Ridge,-,-
+model,domain,params,size_kb,note
+NanoSentry,C-MAPSS (FD001-FD004),12052,47.1,n_sensors=14 n_classes=3
+NanoSentry,Battery,11572,45.3,n_sensors=4 n_classes=3
+NanoSentry,CWRU,11659,45.6,n_sensors=1 n_classes=10
+LSTM-64,C-MAPSS,53825,210.3,2-layer LSTM hidden=64
+CNN-32,C-MAPSS,7841,30.6,3-layer 1D-CNN filters=32
+Ridge,all,<100,<1,linear on statistical features
