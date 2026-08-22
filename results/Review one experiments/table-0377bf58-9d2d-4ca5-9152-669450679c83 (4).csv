@@ -1,0 +1,5 @@
+﻿Variant,FD001 RMSE,Δ,FD003 RMSE,Δ
+Full NanoSentry,14.08 ± 0.56,—,14.28 ± 1.28,—
+w/o CrossSensorGate,17.18 ± 1.79,+3.10,16.87 ± 0.80,+2.60
+w/o Skip Connection,16.05 ± 1.05,+1.97,13.40 ± 0.54,−0.87*
+w/o Dilation (d=1 only),16.12 ± 0.59,+2.04,14.62 ± 0.13,+0.35

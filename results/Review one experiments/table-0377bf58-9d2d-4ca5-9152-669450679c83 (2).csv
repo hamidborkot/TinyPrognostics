@@ -1,0 +1,4 @@
+﻿Domain,Input,Flash (Weights+Code),Peak SRAM,SRAM %,Latency,Energy/Inf
+C-MAPSS,64 × 14,75 KiB,22 KiB,~4%,2.5 ms,~0.8 mJ
+Battery,64 × 4,73 KiB,19 KiB,~4%,2.2 ms,~0.7 mJ
+CWRU,1024 × 1,75 KiB,210 KiB,~41%,45.0 ms,~15.0 mJ

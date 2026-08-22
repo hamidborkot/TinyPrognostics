@@ -1,0 +1,4 @@
+﻿Domain / Task,Input Shape,Comp. Load (MACs),Flash Footprint (Weights + Code),Peak SRAM (Activations + Stack),SRAM Utilization,Latency (@ 480 MHz),Energy / Inference,On-Target ML Metric
+C-MAPSS (RUL),64 \times 14,0.60 M,75 KiB (47.1 KiB weights),22 KiB,~4% of 512 KiB,2.5 ms,~0.8 mJ,RMSE: 14.75 cycles
+Battery (SOH),64 \times 4,0.57 M,73 KiB (45.2 KiB weights),19 KiB,~4% of 512 KiB,2.2 ms,~0.7 mJ,RMSE: 1.87 cycles
+CWRU (Fault),1024 \times 1,8.92 M,75 KiB (45.5 KiB weights),210 KiB,~41% of 512 KiB,45.0 ms,~15.0 mJ,Acc: 97.7% (10-class)

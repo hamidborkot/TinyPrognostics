@@ -1,0 +1,4 @@
+﻿Domain,Input,Parameters,FP32 weight memory
+C-MAPSS,64 × 14,"12,052",47.08 KiB
+Battery,64 × 4,"11,572",45.20 KiB
+CWRU,1024 × 1,"11,659",45.54 KiB
